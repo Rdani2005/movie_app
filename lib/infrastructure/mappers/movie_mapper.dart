@@ -1,5 +1,5 @@
 import 'package:movie_app/domain/entities/movie.dart';
-import 'package:movie_app/infrastructure/models/moviedb.dart';
+import 'package:movie_app/infrastructure/models/models.dart';
 
 class MovieMapper {
   static Movie movieDbToEntity(MovieDB movieDB) => Movie(
@@ -22,4 +22,27 @@ class MovieMapper {
         voteAverage: movieDB.voteAverage,
         voteCount: movieDB.voteCount,
       );
+
+  static Movie movieDBDetailsToEntity(MovieDbDetails movieDbDetails) {
+    return Movie(
+      adult: movieDbDetails.adult,
+      backdropPath: movieDbDetails.backdropPath != ''
+          ? 'https://image.tmdb.org/t/p/w500${movieDbDetails.backdropPath}'
+          : 'https://static.displate.com/857x1200/displate/2022-04-15/7422bfe15b3ea7b5933dffd896e9c7f9_46003a1b7353dc7b5a02949bd074432a.jpg',
+      genreIds: movieDbDetails.genres.map((e) => e.name).toList(),
+      id: movieDbDetails.id,
+      originalLanguage: movieDbDetails.originalLanguage,
+      originalTitle: movieDbDetails.originalTitle,
+      overview: movieDbDetails.overview,
+      popularity: movieDbDetails.popularity,
+      posterPath: movieDbDetails.posterPath != ''
+          ? 'https://image.tmdb.org/t/p/original${movieDbDetails.posterPath}'
+          : 'no-poster',
+      releaseDate: movieDbDetails.releaseDate,
+      title: movieDbDetails.title,
+      video: movieDbDetails.video,
+      voteAverage: movieDbDetails.voteAverage,
+      voteCount: movieDbDetails.voteCount,
+    );
+  }
 }
