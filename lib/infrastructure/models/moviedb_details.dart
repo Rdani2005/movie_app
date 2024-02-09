@@ -11,13 +11,13 @@ String movieDbToJson(MovieDbDetails data) => json.encode(data.toJson());
 
 class MovieDbDetails {
   final bool adult;
-  final String backdropPath;
+  final String? backdropPath;
   final BelongsToCollection? belongsToCollection;
   final int budget;
   final List<Genre> genres;
   final String homepage;
   final int id;
-  final String imdbId;
+  final String? imdbId;
   final String originalLanguage;
   final String originalTitle;
   final String overview;

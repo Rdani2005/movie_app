@@ -4,7 +4,6 @@ import 'package:movie_app/domain/datasources/movies_datasource.dart';
 import 'package:movie_app/domain/entities/movie.dart';
 import 'package:movie_app/infrastructure/mappers/movie_mapper.dart';
 import 'package:movie_app/infrastructure/models/models.dart';
-import 'package:movie_app/infrastructure/models/moviedb_response.dart';
 
 class MovieDBDatasource extends MovieDatasource {
   final dio = Dio(
@@ -37,8 +36,20 @@ class MovieDBDatasource extends MovieDatasource {
     return await _getMovies(page: page, route: '/movie/top_rated');
   }
 
-  Future<List<Movie>> _getMovies({int page = 1, String route = ''}) async {
-    final response = await dio.get(route, queryParameters: {'page': page});
+  @override
+  Future<Movie> getMovieByMovieId({required String movieId}) async {
+    final response = await dio.get('/movie/$movieId');
+    if (response.statusCode != 200) {
+      throw Exception('Movie with id: $movieId was not found.');
+    }
+    final movieDBResponse = MovieDbDetails.fromJson(response.data);
+    return MovieMapper.movieDBDetailsToEntity(movieDBResponse);
+  }
+
+  @override
+  Future<List<Movie>> searchMoviesByQuery({required String query}) async {
+    final response =
+        await dio.get('/search/movie', queryParameters: {'query': query});
     final movieDBResponse = MovieDbResponse.fromJson(response.data);
 
     final List<Movie> movies = movieDBResponse.results
@@ -49,13 +60,15 @@ class MovieDBDatasource extends MovieDatasource {
     return movies;
   }
 
-  @override
-  Future<Movie> getMovieByMovieId({required String movieId}) async {
-    final response = await dio.get('/movie/$movieId');
-    if (response.statusCode != 200) {
-      throw Exception('Movie with id: $movieId was not found.');
-    }
-    final movieDBResponse = MovieDbDetails.fromJson(response.data);
-    return MovieMapper.movieDBDetailsToEntity(movieDBResponse);
+  Future<List<Movie>> _getMovies({int page = 1, String route = ''}) async {
+    final response = await dio.get(route, queryParameters: {'page': page});
+    final movieDBResponse = MovieDbResponse.fromJson(response.data);
+
+    final List<Movie> movies = movieDBResponse.results
+        .where((moviedb) => moviedb.posterPath != 'no-poster')
+        .map((moviedb) => MovieMapper.movieDbToEntity(moviedb))
+        .toList();
+
+    return movies;
   }
 }

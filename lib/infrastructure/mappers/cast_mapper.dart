@@ -2,7 +2,7 @@ import 'package:movie_app/domain/entities/actor.dart';
 import 'package:movie_app/infrastructure/models/models.dart';
 
 class CastMapper {
-  static Actor CastToActor(CastMovieDB cast) => Actor(
+  static Actor castToActor(CastMovieDB cast) => Actor(
         id: cast.id,
         name: cast.name,
         profilePath: cast.profilePath != null

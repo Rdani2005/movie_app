@@ -24,7 +24,7 @@ class MovieDBActorsDataSource extends ActorsDatasource {
     }
     final movieDBResponse = MovieDbCastResponse.fromJson(response.data);
     final actorsResponse =
-        movieDBResponse.cast.map((e) => CastMapper.CastToActor(e)).toList();
+        movieDBResponse.cast.map((e) => CastMapper.castToActor(e)).toList();
     return actorsResponse;
   }
 }
